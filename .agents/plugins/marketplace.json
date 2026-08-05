@@ -1,0 +1,20 @@
+{
+  "name": "novel-forge",
+  "interface": {
+    "displayName": "小说工坊"
+  },
+  "plugins": [
+    {
+      "name": "novel-forge",
+      "source": {
+        "source": "local",
+        "path": "./plugins/novel-forge"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

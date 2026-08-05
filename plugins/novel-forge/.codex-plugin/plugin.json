@@ -1,0 +1,22 @@
+{
+  "name": "novel-forge",
+  "version": "0.1.0",
+  "description": "Create and revise original Chinese long-form fiction with consistent logic and natural prose.",
+  "author": {
+    "name": "markho930903"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "小说工坊",
+    "shortDescription": "创作原创中文小说，兼顾逻辑与文笔。",
+    "longDescription": "规划、续写、改稿和审校原创中文长篇小说。适用于修仙、奇幻、悬疑、灵异及其组合，并持续核对设定、因果、人物动机、时间线和伏笔。",
+    "developerName": "markho930903",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": [
+      "用 $novel-forge:novel-forge 把这个设定扩展成原创修仙小说的卷一大纲。",
+      "用 $novel-forge:novel-forge 基于已有设定续写本章，保持逻辑严谨、文笔自然。",
+      "用 $novel-forge:novel-forge 审校这段正文的时间线、伏笔、人物动机和语言。"
+    ]
+  }
+}

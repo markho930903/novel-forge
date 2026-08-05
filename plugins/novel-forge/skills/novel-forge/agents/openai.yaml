@@ -1,0 +1,4 @@
+interface:
+  display_name: "小说工坊"
+  short_description: "创作并审校逻辑严谨、文笔流畅、人物鲜活的原创中文长篇小说"
+  default_prompt: "使用 $novel-forge:novel-forge 把设定写成逻辑严谨、文笔流畅的原创小说。"
