@@ -1,6 +1,6 @@
 {
   "name": "novel-forge",
-  "version": "0.1.0",
+  "version": "0.1.1+codex.20260806012402",
   "description": "Create and revise original Chinese long-form fiction with consistent logic and natural prose.",
   "author": {
     "name": "markho930903"

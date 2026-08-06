@@ -6,9 +6,10 @@
 
 - 开书：提炼命题、主冲突、叙事视角、人物目标、代价和卷级目标。
 - 设定与大纲：建立可验证的世界规则、人物关系、势力、线索和章节卡。
+- 文风合同：为古典仙侠、轻快幽默、江湖群像、规则惊悚、秘仪悬疑等方向约束语体、节奏、对白、意象和禁用项，并在续写与改稿中保持一致。
 - 写章与续写：依据已有事实状态推进场景、冲突和选择。
 - 改稿与审校：检查因果、动机、时间线、能力/资源、线索回收和语言节奏。
-- 题材组合：修仙、奇幻、悬疑、灵异，以及历史、科幻、都市、言情、武侠、末世等未列出的类型。
+- 题材与文风组合：修仙、奇幻、悬疑、灵异，以及历史、科幻、都市、言情、武侠、末世等未列出的类型；文风只提炼现有作品的高层特征，不复刻原作表达。
 
 ## 创作底线
 
@@ -25,6 +26,7 @@
 
 ```text
 $novel-forge:novel-forge 把这个设定扩展成原创修仙小说的卷一大纲。
+$novel-forge:novel-forge 以古典诗性仙侠为主、轻快幽默为辅，为这个原创设定建立文风合同和第一章场景卡。
 $novel-forge:novel-forge 基于已有设定续写本章，保持逻辑严谨、文笔自然。
 $novel-forge:novel-forge 审校这段正文的时间线、伏笔、人物动机和语言。
 ```
@@ -55,6 +57,7 @@ plugins/novel-forge/.codex-plugin/plugin.json
 plugins/novel-forge/skills/novel-forge/SKILL.md
 plugins/novel-forge/skills/novel-forge/agents/openai.yaml
 plugins/novel-forge/skills/novel-forge/references/genre-profiles.md
+plugins/novel-forge/skills/novel-forge/references/style-profiles.md
 plugins/novel-forge/skills/novel-forge/references/prose-quality.md
 ```
 
