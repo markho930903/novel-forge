@@ -22,7 +22,7 @@ $novel-forge:novel-forge 基于现有章节大纲续写正文，保持事实账�
 $novel-forge:novel-forge 审校这部小说的时间线、规则、伏笔、人物动机和文风偏离。
 ```
 
-默认只在对话中产出。只有明确要求“保存”“建项目”或指定路径时，才创建/更新 Markdown 和 JSON 资料。
+默认只在对话中产出。只有明确要求“保存”“建项目”或指定路径时，才创建/更新 Markdown 和 JSON 分片资料。
 
 ## 项目目录
 
@@ -50,7 +50,11 @@ $novel-forge:novel-forge 审校这部小说的时间线、规则、伏笔、人�
 │   ├── 人物档案/
 │   ├── 地图/
 │   └── 专题/
-├── 06_图谱索引.json
+├── 06_图谱索引/
+│   ├── manifest.json
+│   ├── nodes/char/protagonist.json
+│   ├── edges/char/protagonist.json
+│   └── views/char/protagonist.md
 ├── 06_图谱索引.md
 ├── 07_事实账本.md
 ├── 08_创作合同.md
@@ -58,7 +62,7 @@ $novel-forge:novel-forge 审校这部小说的时间线、规则、伏笔、人�
 └── 正文/卷01/第001章_开篇.md
 ```
 
-详细字段、命名、链接和迁移边界见 `skills/novel-forge/references/project-structure.md`。图谱 JSON 是事实源，Markdown 视图用脚本渲染，见 `references/graph-index.md`。
+详细字段、命名、链接和迁移边界见 `skills/novel-forge/references/project-structure.md`。图谱目录中的 JSON 分片是事实源，脚本生成紧凑概览和逐节点 Markdown 视图，见 `references/graph-index.md`。
 
 ## 本地脚手架
 
@@ -78,6 +82,7 @@ python3 plugins/novel-forge/skills/novel-forge/scripts/init_novel_project.py add
   ./小说项目 --id line:side-quest --name "副线名称"
 python3 plugins/novel-forge/skills/novel-forge/scripts/update_graph.py add-node \
   ./小说项目 --id char:hero --type character --name "主角" --source "设定/重要角色/主角.md"
+python3 plugins/novel-forge/skills/novel-forge/scripts/update_graph.py migrate ./旧小说项目
 python3 plugins/novel-forge/skills/novel-forge/scripts/validate_novel_project.py ./小说项目
 ```
 
@@ -96,7 +101,7 @@ uv run --with pyyaml python3 \
   plugins/novel-forge/skills/novel-forge
 ```
 
-项目校验器会检查根级 `核心蓝图/`、`故事线/`、`大纲/`、`设定/`、`大纲/卷NN/卷纲.md`、每章独立大纲字段、正文映射、图谱 JSON 引用和 Mermaid 视图；它不能替代真实正文审校，也不会把“待填写”误判成已完成事实。
+项目校验器会检查根级 `核心蓝图/`、`故事线/`、`大纲/`、`设定/`、`大纲/卷NN/卷纲.md`、每章独立大纲字段、正文映射、图谱 JSON 分片引用和 Mermaid 视图；它不能替代真实正文审校，也不会把“待填写”误判成已完成事实。
 
 ## 本地插件入口
 

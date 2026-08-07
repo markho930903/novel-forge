@@ -72,7 +72,7 @@ python3 scripts/validate_novel_project.py ./小说项目
 
 ## 图谱索引工作流
 
-`06_图谱索引.json` 是事实源，`06_图谱索引.md` 是可读视图。新节点先登记，再建立关系；每条关系至少有来源、证据、首次出现、状态，悬疑线还要有计划回收位置。任何正文或大纲造成的人物关系、地点移动、规则触发、线索状态或事件因果变化，都要同步图谱和事实账本。
+`06_图谱索引/` 是分片事实源：`nodes/<type>/<slug>.json` 每个节点一文件，`edges/<type>/<slug>.json` 保存该节点发出的关系，`views/<type>/<slug>.md` 生成对应局部图；`manifest.json` 只保存元数据与计数。根级 `06_图谱索引.md` 只保留类型级概览，不再复制全书表格。新节点先登记，再建立关系；每条关系至少有来源、证据、首次出现、状态，悬疑线还要有计划回收位置。任何正文或大纲造成的人物关系、地点移动、规则触发、线索状态或事件因果变化，都要同步图谱和事实账本。
 
 用脚本维护并重新渲染：
 
@@ -83,6 +83,7 @@ python3 scripts/update_graph.py add-edge ./小说项目 --from rule:three-bells 
   --relation "触发" --to event:door-opens --evidence "第002章第三声后门锁松动" \
   --first-seen "第002章" --payoff "第008章" --source "大纲/卷01/第002章_钟声.md"
 python3 scripts/update_graph.py render ./小说项目
+python3 scripts/update_graph.py migrate ./旧小说项目
 ```
 
 反转时保留旧边和旧证据，把状态改为 `resolved` 或 `retired`，再添加新的真实关系。不得把作者知道但读者从未见过的事实当作公平线索。
