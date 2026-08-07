@@ -4,13 +4,23 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import sys
 from pathlib import Path
 
-from update_graph import empty_graph, graph_json_path, render_graph, save_graph
+from update_graph import (
+    archive_legacy_graph,
+    empty_graph,
+    graph_manifest_path,
+    graph_source_exists,
+    legacy_graph_backup_path,
+    legacy_graph_json_path,
+    load_graph,
+    migrate_graph,
+    render_graph,
+    save_graph,
+)
 
 
 ROOT_FILES = (
@@ -24,7 +34,7 @@ ROOT_FILES = (
     "设定/人物脉络.md",
     "设定/地图与地点.md",
     "设定/设定总览.md",
-    "06_图谱索引.json",
+    "06_图谱索引/manifest.json",
     "06_图谱索引.md",
     "07_事实账本.md",
     "08_创作合同.md",
@@ -107,7 +117,7 @@ def root_documents(title: str, one_line: str, genre: str, style: str) -> dict[st
 
 - 故事线总表：[故事线/故事线总表.md](../故事线/故事线总表.md)
 - 人物脉络：[设定/人物脉络.md](../设定/人物脉络.md)
-- 图谱事实源：[06_图谱索引.json](../06_图谱索引.json)
+- 图谱事实源：[06_图谱索引/manifest.json](../06_图谱索引/manifest.json)
 
 ## 变更记录
 
@@ -156,7 +166,7 @@ def root_documents(title: str, one_line: str, genre: str, style: str) -> dict[st
 
 - 主线答案：待填写
 - 主要人物弧终点：待填写
-- 关键伏笔回收位置：见 `06_图谱索引.json` 的 `payoff`
+- 关键伏笔回收位置：见 `06_图谱索引/` 分片中的 `payoff`
 
 ## 禁止事项
 
@@ -228,7 +238,7 @@ def root_documents(title: str, one_line: str, genre: str, style: str) -> dict[st
 
 ## 关系变更规则
 
-人物关系的重大变化必须同时更新本表、对应档案和 `06_图谱索引.json`。
+人物关系的重大变化必须同时更新本表、对应档案和 `06_图谱索引/` 分片。
 """,
         "设定/人物脉络.md": f"""# {title}：人物脉络
 
@@ -726,7 +736,9 @@ def init_project(args: argparse.Namespace) -> None:
         role_content("主角", "char:protagonist"),
         args.merge,
     )
-    if not graph_json_path(project).exists():
+    if graph_source_exists(project) and not graph_manifest_path(project).is_file():
+        migrate_graph(project)
+    elif not graph_source_exists(project):
         save_graph(project, empty_graph())
     for filename, content in root_documents(title, one_line, genre, style).items():
         write_missing(project / filename, content, args.merge)
@@ -904,16 +916,17 @@ def migrate_layout_command(args: argparse.Namespace) -> None:
         if target.exists():
             raise FileExistsError(f"迁移目标已存在: {target}；未执行任何移动")
 
-    graph_path = graph_json_path(project)
     graph_data: dict[str, object] | None = None
-    if graph_path.is_file():
-        try:
-            loaded_graph = json.loads(graph_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"图谱 JSON 无法解析；未执行迁移: {exc}") from exc
-        if not isinstance(loaded_graph, dict):
-            raise ValueError("图谱 JSON 根节点必须是对象；未执行迁移")
-        graph_data = loaded_graph
+    graph_was_legacy = (
+        legacy_graph_json_path(project).is_file()
+        and not graph_manifest_path(project).is_file()
+    )
+    if graph_was_legacy and legacy_graph_backup_path(project).exists():
+        raise FileExistsError(
+            f"旧图谱备份已存在: {legacy_graph_backup_path(project)}；未执行任何迁移"
+        )
+    if graph_source_exists(project):
+        graph_data = load_graph(project)
 
     move_map = {source.resolve(): target.resolve() for source, target in moves}
     for source, target in moves:
@@ -973,15 +986,25 @@ def migrate_layout_command(args: argparse.Namespace) -> None:
                 relative = os.path.relpath(canonical_source, project).replace(os.sep, "/")
                 item["source"] = f"{relative}{'#' + anchor if anchor_separator else ''}"
                 graph_changed = True
-        if graph_changed:
+        if graph_changed or graph_was_legacy:
             save_graph(project, graph_data)
+            if graph_was_legacy:
+                archive_legacy_graph(project)
             render_graph(project, graph_data)
 
     if moves:
-        graph_note = "，同步图谱来源" if graph_changed else ""
+        graph_notes: list[str] = []
+        if graph_changed:
+            graph_notes.append("同步图谱来源")
+        if graph_was_legacy:
+            graph_notes.append("拆分图谱索引")
+        graph_note = f"，{'、'.join(graph_notes)}" if graph_notes else ""
         print(f"已迁移 {len(moves)} 个资料文件，更新 {changed_files} 个链接文件{graph_note}")
     else:
-        print("未发现旧布局文件；未执行移动")
+        if graph_was_legacy:
+            print("未发现旧布局文件；已拆分图谱索引")
+        else:
+            print("未发现旧布局文件；未执行移动")
     print("旧目录未删除，请确认校验和链接后再手工清理空目录")
 
 
