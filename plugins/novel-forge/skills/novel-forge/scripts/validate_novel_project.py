@@ -45,7 +45,9 @@ REQUIRED_OUTLINE_HEADINGS = (
     "## 图谱变更",
     "## 连续性检查",
 )
-CHAPTER_RE = re.compile(r"^第\d{3}章_.+\.md$")
+# Three digits are the minimum width; Python-style numbering naturally grows
+# to four digits for projects longer than 999 chapters.
+CHAPTER_RE = re.compile(r"^第\d{3,}章_.+\.md$")
 VOLUME_RE = re.compile(r"^卷\d{2}$")
 
 
@@ -178,7 +180,7 @@ def validate(project: Path) -> tuple[list[str], list[str]]:
                 continue
             chapter_files.append(path)
             if not CHAPTER_RE.fullmatch(path.name):
-                errors.append(f"章节大纲文件名不符合 第NNN章_名称.md: {path.relative_to(project)}")
+                errors.append(f"章节大纲文件名不符合 第NNN章_名称.md（章号至少三位）: {path.relative_to(project)}")
                 continue
             content = path.read_text(encoding="utf-8")
             for heading in REQUIRED_OUTLINE_HEADINGS:

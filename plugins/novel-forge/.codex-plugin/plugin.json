@@ -1,6 +1,6 @@
 {
   "name": "novel-forge",
-  "version": "0.2.2+codex.20260807073239",
+  "version": "0.2.3+codex.20260807140356",
   "description": "A structured Codex workspace for original Chinese long-form fiction, from one-line premise to graph-indexed chapters.",
   "author": {
     "name": "markho930903"
